@@ -1,4 +1,4 @@
-﻿namespace LystfiskerPortalen.Persistence
+﻿namespace LystfiskerPortalen.Data.Persistence
 {
     public class ExampleRepository
     {
