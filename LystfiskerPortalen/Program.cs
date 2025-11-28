@@ -29,6 +29,8 @@ namespace LystfiskerPortalen
             app.MapRazorComponents<App>();
 
             app.Run();
+            app.UseStaticFiles();  // this found on chat gpt to run css in wwwroot
+
         }
     }
 }
