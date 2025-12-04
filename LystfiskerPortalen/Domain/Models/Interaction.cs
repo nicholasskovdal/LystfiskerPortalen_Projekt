@@ -1,4 +1,6 @@
-﻿namespace LystfiskerPortalen.Domain.Models
+﻿using LystfiskerPortalen.Domain.Enums;
+
+namespace LystfiskerPortalen.Domain.Models
 {
     public class Interaction
     {
