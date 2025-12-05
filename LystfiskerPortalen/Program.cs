@@ -1,4 +1,4 @@
-using LystfiskerPortalen.Components;
+using LystfiskerPortalen.UI.Components;
 using LystfiskerPortalen.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
