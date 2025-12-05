@@ -1,4 +1,4 @@
-﻿namespace LystfiskerPortalen.Domain.Enums
+﻿namespace LystfiskerPortalen.Application.Enums
 {
     public enum InteractionType
     {

@@ -1,4 +1,6 @@
 using LystfiskerPortalen.Components;
+using LystfiskerPortalen.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace LystfiskerPortalen
 {
@@ -10,7 +12,16 @@ namespace LystfiskerPortalen
 
             // Add services to the container.
             builder.Services.AddRazorComponents();
+            builder.Services.AddDbContext<LystfiskerportalDbContext>(options =>
+                {
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("LystfiskerPortalenConnection"));
+                });
 
+
+
+
+
+            //builder.Build();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

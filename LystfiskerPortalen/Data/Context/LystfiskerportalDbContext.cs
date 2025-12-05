@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace LystfiskerPortalen.Data
+namespace LystfiskerPortalen.Data.Context
 {
     public class LystfiskerportalDbContext : IdentityDbContext<AppUser>
     {
@@ -12,6 +12,12 @@ namespace LystfiskerPortalen.Data
         }
 
         //DbSet
+        public DbSet<Profile> Profiles { get; set; }
+        public DbSet<Channel> Channels { get; set; }
+        public DbSet<AppUserChannel> AppUserChannels { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Interaction> Interactions { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
