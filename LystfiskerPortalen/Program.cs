@@ -1,5 +1,5 @@
-using LystfiskerPortalen.Components;
 using LystfiskerPortalen.Data.Context;
+using LystfiskerPortalen.UI.Components;
 using Microsoft.EntityFrameworkCore;
 
 namespace LystfiskerPortalen
