@@ -1,4 +1,4 @@
-﻿using LystfiskerPortalen.Domain.Enums;
+﻿using LystfiskerPortalen.Application.Enums;
 
 namespace LystfiskerPortalen.Domain.Models
 {
