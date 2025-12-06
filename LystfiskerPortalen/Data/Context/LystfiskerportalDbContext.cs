@@ -30,11 +30,6 @@ namespace LystfiskerPortalen.Data.Context
                 .HasForeignKey<Profile>(p => p.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Profile>()
-                .HasOne(p => p.AppUser)
-                .WithOne(u => u.Profile)
-                .HasForeignKey<AppUser>(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // AppUser ↔ Post (one-to-many)
             modelBuilder.Entity<Post>()
@@ -48,7 +43,7 @@ namespace LystfiskerPortalen.Data.Context
                 .HasOne(i => i.AppUser)
                 .WithMany(u => u.Interactions)
                 .HasForeignKey(i => i.AppUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Post ↔ Interaction (one-to-many)
             modelBuilder.Entity<Interaction>()

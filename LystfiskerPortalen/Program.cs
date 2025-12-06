@@ -1,6 +1,8 @@
 using LystfiskerPortalen.UI.Components;
 using LystfiskerPortalen.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using LystfiskerPortalen.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace LystfiskerPortalen
 {
@@ -16,7 +18,9 @@ namespace LystfiskerPortalen
                 {
                     options.UseSqlServer(builder.Configuration.GetConnectionString("LystfiskerPortalenConnection"));
                 });
-
+            builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<LystfiskerportalDbContext>();
 
 
 
@@ -34,8 +38,13 @@ namespace LystfiskerPortalen
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseStaticFiles();
             app.UseAntiforgery();
+
+            app.MapRazorPages(); //Skal måske ikke være her
 
             app.MapRazorComponents<App>();
 
