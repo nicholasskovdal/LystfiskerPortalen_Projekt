@@ -45,7 +45,7 @@ namespace LystfiskerPortalen
             app.UseStaticFiles();
             app.UseAntiforgery();
 
-            app.MapRazorPages(); //Skal måske ikke være her
+            app.MapRazorPages(); //Skal mï¿½ske ikke vï¿½re her
 
             app.MapRazorComponents<App>();
 
