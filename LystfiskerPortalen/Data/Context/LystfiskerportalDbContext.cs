@@ -82,6 +82,14 @@ namespace LystfiskerPortalen.Data.Context
 
 
             //Seed some data for default Channels :D
+            modelBuilder.Entity<Channel>().HasData(
+                new Channel { ChannelId = "1", Name = "Nordjylland" },
+                new Channel { ChannelId = "2", Name = "Midtjylland" },
+                new Channel { ChannelId = "3", Name = "Syddanmark" },
+                new Channel { ChannelId = "4", Name = "Sjælland" },
+                new Channel { ChannelId = "5", Name = "Hovedstaden" },
+                new Channel { ChannelId = "6", Name = "Bornholm" }
+                );
 
         }
     }
