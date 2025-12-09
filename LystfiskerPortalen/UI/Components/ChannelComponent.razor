@@ -1,19 +1,19 @@
 ﻿@page "/kanal/{ChannelId:int}"
 @using LystfiskerPortalen.Application.Interfaces
-@using LystfiskerPortalen.Application.Models
+@using LystfiskerPortalen.UI.ViewModels
 @inject IChannelRepository ChannelRepo
 
 <div>
-    <h3>Channel: @channel?.Name</h3>
+    <h3>Channel: @channelVm?.Name</h3>
 
-    @if (channel?.Posts == null)
+    @if (channelVm?.Posts == null)
     {
         <p>Der er ikke nogen opslag på denne kanal endnu</p>
     }
     else
     {
         <ul>
-            @foreach (var post in channel.Posts)
+            @foreach (var post in channelVm.Posts)
             {
                 <li>@post.Date.ToShortDateString() - @post.Description</li>
             }
@@ -21,11 +21,33 @@
     }
 </div>
 @code {
-    [Parameter] public int ChannelId { get; set; }
-    private Channel? channel;
+    [Parameter]
+    public int ChannelId { get; set; }
+
+    private ChannelViewModel? channelVm;
 
     protected override async Task OnParametersSetAsync()
     {
-        channel = await ChannelRepo.GetChannelByIdAsync(ChannelId);
+        var channel = await ChannelRepo.GetChannelByIdAsync(ChannelId);
+        if (channel != null)
+        {
+            channelVm = new ChannelViewModel
+                {
+                    ChannelId = channel.ChannelId,
+                    Name = channel.Name,
+                    Posts = channel.Posts.Select(p => new PostViewModel
+                    {
+                        PostId = p.PostId,
+                        Description = p.Description,
+                        Date = p.Date,
+                        Bait = p.Bait,
+                        Location = p.Location,
+                        Technique = p.Technique,
+                        ImageUrl = p.ImageUrl,
+                        Inspiration = p.Inspiration,
+                        CreatedAt = p.CreatedAt
+                    }).ToList()
+                };
+        }
     }
 }
