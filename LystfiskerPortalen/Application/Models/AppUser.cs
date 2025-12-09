@@ -6,7 +6,6 @@ namespace LystfiskerPortalen.Application.Models
 {
     public class AppUser : IdentityUser
     {
-        public string AppUserId { get; set; } //Primary Key
         public int Age { get; set; }
         public string Gender { get; set; }
         public string? Address { get; set; }
