@@ -1,6 +1,6 @@
 ﻿using LystfiskerPortalen.Application.Enums;
 
-namespace LystfiskerPortalen.Domain.Models
+namespace LystfiskerPortalen.Application.Models
 {
     public class Interaction
     {

@@ -1,4 +1,4 @@
-﻿namespace LystfiskerPortalen.Domain.Models
+﻿namespace LystfiskerPortalen.Application.Models
 {
     //Many-to-many relationship, så her er en klasse for at lave et normaliseret, separat table med EF Core
     public class AppUserChannel

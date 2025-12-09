@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Identity;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace LystfiskerPortalen.Domain.Models
+namespace LystfiskerPortalen.Application.Models
 {
     public class AppUser : IdentityUser
     {
@@ -9,6 +10,7 @@ namespace LystfiskerPortalen.Domain.Models
         public int Age { get; set; }
         public string Gender { get; set; }
         public string? Address { get; set; }
+        public string ProfileName { get; set; }
 
 
         /*Navigation Properties til EF Core*/

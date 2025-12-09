@@ -1,4 +1,4 @@
-﻿using LystfiskerPortalen.Domain.Models;
+﻿using LystfiskerPortalen.Application.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

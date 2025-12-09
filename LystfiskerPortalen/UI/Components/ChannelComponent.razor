@@ -1,0 +1,31 @@
+﻿@page "/kanal/{ChannelId:int}"
+@using LystfiskerPortalen.Application.Interfaces
+@using LystfiskerPortalen.Application.Models
+@inject IChannelRepository ChannelRepo
+
+<div>
+    <h3>Channel: @channel?.Name</h3>
+
+    @if (channel?.Posts == null)
+    {
+        <p>Der er ikke nogen opslag på denne kanal endnu</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var post in channel.Posts)
+            {
+                <li>@post.Date.ToShortDateString() - @post.Description</li>
+            }
+        </ul>
+    }
+</div>
+@code {
+    [Parameter] public int ChannelId { get; set; }
+    private Channel? channel;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        channel = await ChannelRepo.GetChannelByIdAsync(ChannelId);
+    }
+}

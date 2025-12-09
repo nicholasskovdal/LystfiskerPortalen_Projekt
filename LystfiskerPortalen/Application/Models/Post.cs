@@ -1,4 +1,4 @@
-﻿namespace LystfiskerPortalen.Domain.Models
+﻿namespace LystfiskerPortalen.Application.Models
 {
     public class Post
     {
