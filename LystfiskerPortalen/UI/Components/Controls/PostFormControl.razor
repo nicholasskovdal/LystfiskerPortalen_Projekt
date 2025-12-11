@@ -1,0 +1,7 @@
+﻿@using LystfiskerPortalen.Application.Interfaces
+
+
+@code {
+    [Parameter] public string ChannelId { get; set; }
+    [Inject] public IPostService PostService { get; set; }
+}

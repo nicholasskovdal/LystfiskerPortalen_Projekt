@@ -5,6 +5,7 @@ using LystfiskerPortalen.Application.Models;
 using Microsoft.AspNetCore.Identity;
 using LystfiskerPortalen.Application.Interfaces;
 using LystfiskerPortalen.Data.Persistence;
+using LystfiskerPortalen.Application.Services;
 
 namespace LystfiskerPortalen
 {
@@ -25,6 +26,11 @@ namespace LystfiskerPortalen
                 .AddEntityFrameworkStores<LystfiskerportalDbContext>();
 
             builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
+            builder.Services.AddScoped<IInteractionRepository, InteractionRepository>();
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
+            builder.Services.AddScoped<IInteractionService, InteractionService>();
+            builder.Services.AddScoped<IPostService, PostService>();
+
 
 
             //builder.Build();

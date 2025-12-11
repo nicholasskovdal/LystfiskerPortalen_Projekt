@@ -1,30 +1,47 @@
 ﻿@page "/kanal/{ChannelId:int}"
 @using LystfiskerPortalen.Application.Interfaces
 @using LystfiskerPortalen.UI.ViewModels
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IChannelRepository ChannelRepo
+@inject AuthenticationStateProvider AuthProvider /*replaces UserManager in .razor files*/
 
 <div>
-    <h3>Channel: @channelVm?.Name</h3>
-
-    @if (channelVm?.Posts == null)
+    @if (!isAuthenticated) //Only logged in users must be able to view posts
     {
-        <p>Der er ikke nogen opslag på denne kanal endnu</p>
+        <p>Du skal logge ind for at se opslag</p>
     }
     else
     {
-        <ul>
-            @foreach (var post in channelVm.Posts)
-            {
-                <li>@post.Date.ToShortDateString() - @post.Description</li>
-            }
-        </ul>
+
+
+        <h3>Channel: @channelVm?.Name</h3>
+
+        @if (channelVm?.Posts == null)
+        {
+            <p>Der er ikke nogen opslag på denne kanal endnu</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var post in channelVm.Posts)
+                {
+                    <li>@post.Date.ToShortDateString() - @post.Description</li>
+                }
+            </ul>
+        }
     }
 </div>
 @code {
     [Parameter]
     public int ChannelId { get; set; }
-
     private ChannelViewModel? channelVm;
+    private bool isAuthenticated = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -32,22 +49,22 @@
         if (channel != null)
         {
             channelVm = new ChannelViewModel
+            {
+                ChannelId = channel.ChannelId,
+                Name = channel.Name,
+                Posts = channel.Posts.Select(p => new PostViewModel
                 {
-                    ChannelId = channel.ChannelId,
-                    Name = channel.Name,
-                    Posts = channel.Posts.Select(p => new PostViewModel
-                    {
-                        PostId = p.PostId,
-                        Description = p.Description,
-                        Date = p.Date,
-                        Bait = p.Bait,
-                        Location = p.Location,
-                        Technique = p.Technique,
-                        ImageUrl = p.ImageUrl,
-                        Inspiration = p.Inspiration,
-                        CreatedAt = p.CreatedAt
-                    }).ToList()
-                };
+                    PostId = p.PostId,
+                    Description = p.Description,
+                    Date = p.Date,
+                    Bait = p.Bait,
+                    Location = p.Location,
+                    Technique = p.Technique,
+                    ImageUrl = p.ImageUrl,
+                    Inspiration = p.Inspiration,
+                    CreatedAt = p.CreatedAt
+                }).ToList()
+            };
         }
     }
 }
