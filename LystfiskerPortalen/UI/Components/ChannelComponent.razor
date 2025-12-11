@@ -1,40 +1,40 @@
 ﻿@page "/kanal/{ChannelId:int}"
 @using LystfiskerPortalen.Application.Interfaces
+@using LystfiskerPortalen.UI.Components.Controls
 @using LystfiskerPortalen.UI.ViewModels
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IChannelRepository ChannelRepo
 @inject AuthenticationStateProvider AuthProvider /*replaces UserManager in .razor files*/
 
-<div>
+<div class="">
     @if (!isAuthenticated) //Only logged in users must be able to view posts
     {
         <p>Du skal logge ind for at se opslag</p>
     }
     else
     {
+        <h3>Channel: @channelViewModel?.Name</h3>
+        <PostFormControl ChannelId="@ChannelId.ToString()"></PostFormControl> //Skriv en post UI
 
-
-        <h3>Channel: @channelVm?.Name</h3>
-
-        @if (channelVm?.Posts == null)
+        @if (channelViewModel?.Posts == null || !channelViewModel.Posts.Any())
         {
             <p>Der er ikke nogen opslag på denne kanal endnu</p>
         }
         else
         {
-            <ul>
-                @foreach (var post in channelVm.Posts)
+            <div class="">
+                @foreach (var post in channelViewModel.Posts)
                 {
-                    <li>@post.Date.ToShortDateString() - @post.Description</li>
+                    <PostControl postViewModel="@post"/>
                 }
-            </ul>
+            </div>
         }
     }
 </div>
 @code {
-    [Parameter]
-    public int ChannelId { get; set; }
-    private ChannelViewModel? channelVm;
+    [Parameter] public int ChannelId { get; set; }
+
+    private ChannelViewModel? channelViewModel;
     private bool isAuthenticated = false;
 
     protected override async Task OnInitializedAsync()
@@ -48,7 +48,7 @@
         var channel = await ChannelRepo.GetChannelByIdAsync(ChannelId);
         if (channel != null)
         {
-            channelVm = new ChannelViewModel
+            channelViewModel = new ChannelViewModel
             {
                 ChannelId = channel.ChannelId,
                 Name = channel.Name,
@@ -62,9 +62,19 @@
                     Technique = p.Technique,
                     ImageUrl = p.ImageUrl,
                     Inspiration = p.Inspiration,
-                    CreatedAt = p.CreatedAt
+                    CreatedAt = p.CreatedAt,
+                    AuthorName = p.AppUser?.ProfileName ?? "Ukendt",
+                    Interactions = p.Interactions.Select(i => new InteractionViewModel
+                    {
+                        InteractionId = i.InteractionId,
+                        Type = i.Type,
+                        Content = i.Content,
+                        CreatedAt = i.CreatedAt,
+                        AuthorName = i.AppUser?.ProfileName ?? "Ukendt"
+                    }).ToList()
                 }).ToList()
             };
         }
     }
+
 }

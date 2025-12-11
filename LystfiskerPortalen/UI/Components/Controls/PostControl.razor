@@ -1,9 +1,88 @@
-﻿
+﻿@using LystfiskerPortalen.Application.Enums
+@using LystfiskerPortalen.Application.Interfaces
+@using LystfiskerPortalen.UI.ViewModels
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthProvider
+@inject IInteractionService InteractionService
 
-<div class="post">
 
+@*mangler styling!!*@
+<div class="">
+    <div class="" >
+        <span>@postViewModel.CreatedAt.ToShortDateString()</span>
+        <strong>@postViewModel.AuthorName</strong>
+    </div>
+
+    <div class="">
+        <p>@postViewModel.Description</p>
+        @if (!string.IsNullOrEmpty(postViewModel.ImageUrl)) {<img src="@postViewModel.ImageUrl"/>}
+        <p><strong>Sted:</strong> @postViewModel.Location</p>
+        <p><strong>Agn:</strong> @postViewModel.Bait</p>
+        <p><strong>Teknik:</strong> @postViewModel.Technique</p>
+        <p><strong>Inspiration:</strong> @postViewModel.Inspiration</p>
+        <p><strong>Fangstdato:</strong> @postViewModel.Date.ToShortDateString()</p>
+    </div>
+
+    <div class="">
+        <button @onclick="ToggleLike">
+            @(userHasLiked ? "Fjern Like" : "Like")
+            (@postViewModel.Interactions.Count(i => i.Type == InteractionType.Like))
+        </button>
+
+        <button @onclick="SharePost">
+            Del (@postViewModel.Interactions.Count(i => i.Type == InteractionType.Share))
+        </button>
+    </div>
+
+    @if (showCommentForm)
+    {
+        <CommentFormControl PostId="@postViewModel.PostId" @*OnCommentAdded="ReloadPost"*@></CommentFormControl> //CommentControl er ikke færdig endnu 11/12-2025 17:37
+    }
+
+    <div class="">
+        @foreach (var comment in postViewModel.Interactions.Where(i => i.Type == InteractionType.Comment))
+        {
+            <CommentControl></CommentControl> //Ikke færdig 11/12-2025 17:40
+        }
+    </div>
 </div>
 
 @code {
+    [Parameter] public PostViewModel postViewModel { get; set; }
 
+    private bool showCommentForm = false;
+    private string? userId;
+    private bool userHasLiked => postViewModel.Interactions.Any(i => i.Type == InteractionType.Like && i.AuthorName == postViewModel.AuthorName);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //åbenbart sådan man skal få fat i userId - value of ClaimTypes URI specifikation
+    }
+
+
+    //Lokale metoder
+    private void ShowCommentForm() => showCommentForm = true;
+
+    private async Task ToggleLike()
+    {
+        if (userId != null)
+        {
+            await InteractionService.ToggleLikeAsync(postViewModel.PostId, userId);
+        }
+    }
+
+    private async Task SharePost()
+    {
+        if (userId != null)
+        {
+            await InteractionService.AddShareAsync(postViewModel.PostId, userId);
+        }
+    }
+
+    private Task ReloadPost()
+    {
+        return Task.CompletedTask;
+    }
 }

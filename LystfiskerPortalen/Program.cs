@@ -1,11 +1,14 @@
-using LystfiskerPortalen.UI.Components;
-using LystfiskerPortalen.Data.Context;
-using Microsoft.EntityFrameworkCore;
-using LystfiskerPortalen.Application.Models;
-using Microsoft.AspNetCore.Identity;
 using LystfiskerPortalen.Application.Interfaces;
-using LystfiskerPortalen.Data.Persistence;
+using LystfiskerPortalen.Application.Models;
 using LystfiskerPortalen.Application.Services;
+using LystfiskerPortalen.Data.Context;
+using LystfiskerPortalen.Data.Persistence;
+using LystfiskerPortalen.UI.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components.Server;
+
 
 namespace LystfiskerPortalen
 {
@@ -30,6 +33,11 @@ namespace LystfiskerPortalen
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IInteractionService, InteractionService>();
             builder.Services.AddScoped<IPostService, PostService>();
+
+            builder.Services.AddAuthentication();
+            builder.Services.AddAuthorization();
+            builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+            builder.Services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, UserClaimsPrincipalFactory<AppUser>>();
 
 
 

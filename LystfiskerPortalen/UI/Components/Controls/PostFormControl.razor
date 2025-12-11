@@ -1,7 +1,47 @@
 ﻿@using LystfiskerPortalen.Application.Interfaces
+@using LystfiskerPortalen.UI.ViewModels
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthProvider
+@inject IPostService PostService
 
+<EditForm Model="@formModel" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <InputTextArea @bind-Value="formModel.Description" placeholder="Beskriv din fangst..." />
+    <InputText @bind-Value="formModel.Location" />
+    <InputText @bind-Value="formModel.Bait" />
+    <InputText @bind-Value="formModel.Technique" />
+    <InputText @bind-Value="formModel.Inspiration" />
+    <InputDate @bind-Value="formModel.Date" />          
+    <InputText @bind-Value="formModel.ImageUrl" />
+
+    <button type="submit">Opret opslag</button>
+
+
+</EditForm>
 
 @code {
     [Parameter] public string ChannelId { get; set; }
-    [Inject] public IPostService PostService { get; set; }
+
+    private PostFormViewModel formModel = new();
+    private string? userId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //finder userId fra ClaimTypes URI.value
+        formModel.ChannelId = ChannelId.ToString();
+    }
+
+
+    private async Task HandleSubmit()
+    {
+        if (userId != null)
+        {
+            await PostService.CreatePostAsync(formModel, userId);
+            formModel = new(); //resets PostFormViewModel instance
+        }
+    }
 }
