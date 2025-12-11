@@ -1,10 +1,10 @@
-using LystfiskerPortalen.UI.Components;
-using LystfiskerPortalen.Data.Context;
-using Microsoft.EntityFrameworkCore;
-using LystfiskerPortalen.Application.Models;
-using Microsoft.AspNetCore.Identity;
 using LystfiskerPortalen.Application.Interfaces;
+using LystfiskerPortalen.Application.Models;
+using LystfiskerPortalen.Data.Context;
 using LystfiskerPortalen.Data.Persistence;
+using LystfiskerPortalen.UI.Components;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace LystfiskerPortalen
 {
@@ -26,6 +26,7 @@ namespace LystfiskerPortalen
 
             builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
 
+            builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 
             //builder.Build();
             var app = builder.Build();
