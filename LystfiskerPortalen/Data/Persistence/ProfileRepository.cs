@@ -49,9 +49,25 @@ namespace LystfiskerPortalen.Data.Persistence
             await _context.SaveChangesAsync();
         }
 
-        public Task FollowAsync(int followerId, int targetId)
+        public async Task FollowAsync(string followerId, string targetId)
         {
-            throw new NotImplementedException(); // To be implemented later need a Follower entity/table
+            if (_context == null) throw new InvalidOperationException("DbContext is not available");
+
+            var follower = await _context.Profiles
+                                         .Include(p => p.Following)
+                                         .FirstOrDefaultAsync(p => p.ProfileId == followerId);
+            var target = await _context.Profiles
+                                       .Include(p => p.Followers)
+                                       .FirstOrDefaultAsync(p => p.ProfileId == targetId);
+
+            if (follower == null || target == null)
+                throw new InvalidOperationException("Follower or target profile not found");
+
+            if (!follower.Following.Contains(target))
+            {
+                follower.Following.Add(target);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<string?> GetBioAsync(string profileId)
@@ -70,14 +86,26 @@ namespace LystfiskerPortalen.Data.Persistence
         .ToListAsync();
         }
 
-        public Task<IEnumerable<Profile>> GetFollowersAsync(int profileId)
+        public async Task<IEnumerable<Profile>> GetFollowersAsync(string profileId)
         {
-            throw new NotImplementedException(); // To be implemented later need a Follower entity/table
+            if (_context == null) throw new InvalidOperationException("DbContext is not available");
+
+            var profile = await _context.Profiles
+                                        .Include(p => p.Followers)
+                                        .FirstOrDefaultAsync(p => p.ProfileId == profileId);
+
+            return profile?.Followers ?? Enumerable.Empty<Profile>();
         }
 
-        public Task<IEnumerable<Profile>> GetFollowingAsync(int profileId)
+        public async Task<IEnumerable<Profile>> GetFollowingAsync(string profileId)
         {
-            throw new NotImplementedException(); // To be implemented later need a Follower entity/table
+            if (_context == null) throw new InvalidOperationException("DbContext is not available");
+
+            var profile = await _context.Profiles
+                                        .Include(p => p.Following)
+                                        .FirstOrDefaultAsync(p => p.ProfileId == profileId);
+
+            return profile?.Following ?? Enumerable.Empty<Profile>();
         }
 
         public async Task<IEnumerable<Interaction>> GetInteractionsForPostAsync(string postId)
@@ -144,9 +172,25 @@ namespace LystfiskerPortalen.Data.Persistence
             throw new NotImplementedException();
         }
 
-        public Task UnfollowAsync(int followerId, int targetId)
+        public async Task UnfollowAsync(string followerId, string targetId)
         {
-            throw new NotImplementedException(); // To be implemented later need a Follower entity/table
+            if (_context == null) throw new InvalidOperationException("DbContext is not available");
+
+            var follower = await _context.Profiles
+                                         .Include(p => p.Following)
+                                         .FirstOrDefaultAsync(p => p.ProfileId == followerId);
+            var target = await _context.Profiles
+                                       .Include(p => p.Followers)
+                                       .FirstOrDefaultAsync(p => p.ProfileId == targetId);
+
+            if (follower == null || target == null)
+                throw new InvalidOperationException("Follower or target profile not found");
+
+            if (follower.Following.Contains(target))
+            {
+                follower.Following.Remove(target);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task UnlikePostAsync(string profileId, string postId)

@@ -25,10 +25,10 @@ namespace LystfiskerPortalen.Application.Interfaces
         Task DeletePostAsync(int postId);
 
         // FOLLOWERS / FOLLOWING
-        Task<IEnumerable<Profile>> GetFollowersAsync(int profileId);
-        Task<IEnumerable<Profile>> GetFollowingAsync(int profileId);
-        Task FollowAsync(int followerId, int targetId);
-        Task UnfollowAsync(int followerId, int targetId);
+        Task<IEnumerable<Profile>> GetFollowersAsync(string profileId);
+        Task<IEnumerable<Profile>> GetFollowingAsync(string profileId);
+        Task FollowAsync(string followerId, string targetId);
+        Task UnfollowAsync(string followerId, string targetId);
 
         // INTERACTIONS (Likes / Comments)
         Task<IEnumerable<Interaction>> GetInteractionsForPostAsync(string postId);
