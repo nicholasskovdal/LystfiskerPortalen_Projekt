@@ -58,14 +58,14 @@ namespace LystfiskerPortalen.Application.Services
                 ImageUrl = p.ImageUrl,
                 Inspiration = p.Inspiration,
                 CreatedAt = p.CreatedAt,
-                AuthorName = p.AppUser?.ProfileName ?? "Ukendt",
+                AuthorName = p.AppUser?.Profile.ProfileName ?? "Ukendt",
                 Interactions = p.Interactions.Select(i => new InteractionViewModel
                 {
                     InteractionId = i.InteractionId,
                     Type = i.Type,
                     Content = i.Content,
                     CreatedAt = i.CreatedAt,
-                    AuthorName = i.AppUser?.ProfileName ?? "Ukendt"
+                    AuthorName = i.AppUser?.Profile.ProfileName ?? "Ukendt"
 
                 }).ToList()
 

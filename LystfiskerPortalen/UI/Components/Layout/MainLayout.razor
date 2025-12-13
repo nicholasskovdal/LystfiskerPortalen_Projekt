@@ -1,3 +1,42 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavManager
 
-@Body
+
+
+<div class="">
+    
+    @if (isAuthenticated)
+    {
+        <span>Hej @userName</span>
+        <a href="/Identity/Account/Logout">Log ud</a>
+    }
+    else
+    {
+        <a href="/Identity/Account/Login">Log ind</a>
+        <a href="/Identity/Account/Register">Opret bruger</a>
+    }
+
+</div>
+
+<br />
+
+
+ @Body
+
+
+
+@code{
+    private bool isAuthenticated = false;
+    private string userName = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+        userName = user.Identity?.Name ?? "";
+    }
+}

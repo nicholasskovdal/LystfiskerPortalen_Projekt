@@ -31,10 +31,14 @@ namespace LystfiskerPortalen.Data.Persistence
         {
             return await _context.Posts
                 .Include(p => p.AppUser)
+                    .ThenInclude(u => u.Profile) 
                 .Include(p => p.Interactions)
+                    .ThenInclude(i => i.AppUser)
+                        .ThenInclude(u => u.Profile)
                 .Where(p => p.ChannelId == channelId)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
+
         }
     }
 }

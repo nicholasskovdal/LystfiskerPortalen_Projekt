@@ -6,11 +6,6 @@ namespace LystfiskerPortalen.Application.Models
 {
     public class AppUser : IdentityUser
     {
-        public int Age { get; set; }
-        public string Gender { get; set; }
-        public string? Address { get; set; }
-        public string ProfileName { get; set; }
-
 
         /*Navigation Properties til EF Core*/
         public Profile Profile { get; set; } //1-1

@@ -2,6 +2,10 @@
 {
     public class Profile
     {
+        public string ProfileName { get; set; }
+        public int Age { get; set; }
+        public string Gender { get; set; }
+        public string? Address { get; set; }
         public string ProfileId { get; set; }
         public string? ProfilePictureUrl { get; set; }
         public string? Biography { get; set; }
