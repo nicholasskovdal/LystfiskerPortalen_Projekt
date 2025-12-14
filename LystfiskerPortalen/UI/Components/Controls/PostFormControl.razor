@@ -5,22 +5,57 @@
 @inject AuthenticationStateProvider AuthProvider
 @inject IPostService PostService
 
-<EditForm Model="@formModel" OnValidSubmit="HandleSubmit">
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
+<div class="d-flex justify-content-center">
+    <div class="card mb-4 shadow-sm" style="width: 100%; max-width: 700px;">
+        <div class="card-header">
+            <strong>Opret nyt opslag</strong>
+        </div>
 
-    <InputTextArea @bind-Value="formModel.Description" placeholder="Beskriv din fangst..." />
-    <InputText @bind-Value="formModel.Location" />
-    <InputText @bind-Value="formModel.Bait" />
-    <InputText @bind-Value="formModel.Technique" />
-    <InputText @bind-Value="formModel.Inspiration" />
-    <InputDate @bind-Value="formModel.Date" />          
-    <InputText @bind-Value="formModel.ImageUrl" />
+        <div class="card-body">
+            <EditForm Model="@formModel" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-    <button type="submit">Opret opslag</button>
+                <div class="mb-3">
+                    <InputTextArea class="form-control" @bind-Value="formModel.Description" placeholder="Beskriv din fangst..." />
+                </div>
 
+                @if (!string.IsNullOrEmpty(formModel.ImageUrl))
+                {
+                    <img src="@formModel.ImageUrl" class="img-fluid rounded mb-3" alt="Preview image" />
+                }
 
-</EditForm>
+                <div class="mb-3">
+                    <InputText class="form-control" @bind-Value="formModel.ImageUrl" placeholder="Billede URL (valgfrit)" />
+                </div>
+
+                <div class="mb-3">
+                    <InputText class="form-control" @bind-Value="formModel.Location" placeholder="Sted (valgfrit)" />
+                </div>
+
+                <div class="mb-3">
+                    <InputText class="form-control" @bind-Value="formModel.Bait" placeholder="Blink el. madding (valgfrit)" />
+                </div>
+
+                <div class="mb-3">
+                    <InputText class="form-control" @bind-Value="formModel.Technique" placeholder="Teknik (valgfrit)" />
+                </div>
+
+                <div class="mb-3">
+                    <InputText class="form-control" @bind-Value="formModel.Inspiration" placeholder="Inspiration (valgfrit)" />
+                </div>
+
+                <div class="mb-3">
+                    <InputDate class="form-control" @bind-Value="formModel.Date"/>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Opret opslag</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter] public string ChannelId { get; set; }
@@ -31,17 +66,16 @@
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
-        userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //finder userId fra ClaimTypes URI.value
+        userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         formModel.ChannelId = ChannelId.ToString();
     }
-
 
     private async Task HandleSubmit()
     {
         if (userId != null)
         {
             await PostService.CreatePostAsync(formModel, userId);
-            formModel = new(); //resets PostFormViewModel instance
+            formModel = new(); // reset form
         }
     }
 }

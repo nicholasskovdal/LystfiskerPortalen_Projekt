@@ -6,15 +6,25 @@
 @inject IChannelRepository ChannelRepo
 @inject AuthenticationStateProvider AuthProvider /*replaces UserManager in .razor files*/
 
-<div class="">
-    @if (!isAuthenticated) //Only logged in users must be able to view posts
+<div>
+    @if (!isAuthenticated)
     {
         <p>Du skal logge ind for at se opslag</p>
     }
     else
     {
         <h3>Channel: @channelViewModel?.Name</h3>
-        <PostFormControl ChannelId="@ChannelId.ToString()"></PostFormControl> //Skriv en post UI
+
+        <div class="mb-3">
+            <button class="btn btn-primary" @onclick="TogglePostForm">
+                @(showPostForm ? "Annuller" : "Opret nyt opslag")
+            </button>
+        </div>
+
+        @if (showPostForm)
+        {
+            <PostFormControl ChannelId="@ChannelId.ToString()" OnPostCreated="OnPostCreated" />
+        }
 
         @if (channelViewModel?.Posts == null || !channelViewModel.Posts.Any())
         {
@@ -22,20 +32,22 @@
         }
         else
         {
-            <div class="">
+            <div class="posts">
                 @foreach (var post in channelViewModel.Posts)
                 {
-                    <PostControl postViewModel="@post"/>
+                    <PostControl postViewModel="@post" />
                 }
             </div>
         }
     }
 </div>
+
 @code {
     [Parameter] public int ChannelId { get; set; }
 
     private ChannelViewModel? channelViewModel;
     private bool isAuthenticated = false;
+    private bool showPostForm = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,6 +56,11 @@
     }
 
     protected override async Task OnParametersSetAsync()
+    {
+        await LoadChannel();
+    }
+
+    private async Task LoadChannel()
     {
         var channel = await ChannelRepo.GetChannelByIdAsync(ChannelId);
         if (channel != null)
@@ -63,18 +80,27 @@
                     ImageUrl = p.ImageUrl,
                     Inspiration = p.Inspiration,
                     CreatedAt = p.CreatedAt,
-                    AuthorName = p.AppUser?.Profile.ProfileName ?? "Ukendt",
+                    AuthorName = p.AppUser?.Profile?.ProfileName ?? "Ukendt",
                     Interactions = p.Interactions.Select(i => new InteractionViewModel
                     {
                         InteractionId = i.InteractionId,
                         Type = i.Type,
                         Content = i.Content,
                         CreatedAt = i.CreatedAt,
-                        AuthorName = i.AppUser?.Profile.ProfileName ?? "Ukendt"
+                        AuthorName = i.AppUser?.Profile?.ProfileName ?? "Ukendt"
                     }).ToList()
                 }).ToList()
             };
         }
     }
+
+    private void TogglePostForm() => showPostForm = !showPostForm;
+
+    private async Task OnPostCreated()
+    {
+        showPostForm = false; // hide form after submit
+        await LoadChannel();  // reload posts so new one appears
+    }
+
 
 }

@@ -1,71 +1,46 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components
 
+<h1 class="mb-4 text-center">Fællesskaber</h1>
 
-
-
-<PageTitle>Home</PageTitle>
-
-<div class="login-container">
-
-    <div class="container" id="container">
-        <div class="sign-up">
-            <form>
-                <h1>Create Account</h1>
-                <div class="icons">
-                    <a href="#" class="icon"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-                </div>
-                <span>or use email for registeration</span>
-                <input type="text" placeholder="Username" />
-                <input type="text" placeholder="Email" />
-                <input type="password" placeholder="Kender" />
-                <input type="text" placeholder="Age" />
-                <input type="text" placeholder="Adresse" />
-                <input type="password" placeholder="Password" />
-                <button>Sign Up</button>
-            </form>
-        </div>
-        <div class="sign-in">
-            <form>
-                <h1>Sign In</h1>
-                <div class="icons">
-                    <a href="#" class="icon"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-                </div>
-                <span>or use email password</span>
-                <input type="text" placeholder="Email" />
-                <input type="password" placeholder="Password" />
-                <a href="#">Forgot password</a>
-                <button>Sign In</button>
-            </form>
-        </div>
-        <div class="toogle-container">
-            <div class="toogle">
-                <div class="toogle-panel toogle-left">
-                    <h1>Welcome User!</h1>
-                    <p>If you already have an account</p>
-                    <button class="hidden" id="login">Sign In</button>
-                </div>
-                <div class="toogle-panel toogle-right">
-                    <h1>Hello, User!</h1>
-                    <p>If you don't have an account</p>
-                    <button class="hidden" id="register">Sign Up</button>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @foreach (var channel in channels)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@channel.Name</h5>
+                    <p class="card-text">@channel.Description</p>
+                    <a class="btn btn-primary" href="@channel.Url">Gå til kanal</a>
                 </div>
             </div>
         </div>
-    </div>
-    <script src="jsx.jsx"></script>
-
-
+    }
 </div>
 
 @code {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    private List<ChannelLink> channels = new()
+    {
+        new ChannelLink(1, "Nordjylland", ""),
+        new ChannelLink(2, "Midtjylland", ""),
+        new ChannelLink(3, "Syddanmark", ""),
+        new ChannelLink(4, "Sjælland", ""),
+        new ChannelLink(5, "Hovedstaden", ""),
+        new ChannelLink(6, "Bornholm", "")
+    };
 
+    private class ChannelLink
+    {
+        public int Id { get; }
+        public string Name { get; }
+        public string Description { get; }
+        public string Url => $"/kanal/{Id}";
+
+        public ChannelLink(int id, string name, string description)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+        }
+    }
 }
-
