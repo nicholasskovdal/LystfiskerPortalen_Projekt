@@ -113,7 +113,7 @@ namespace LystfiskerPortalen.Migrations
 
                     b.HasIndex("ChannelId");
 
-                    b.ToTable("AppUserChannels");
+                    b.ToTable("AppUserChannels", (string)null);
                 });
 
             modelBuilder.Entity("LystfiskerPortalen.Application.Models.Channel", b =>
@@ -127,7 +127,7 @@ namespace LystfiskerPortalen.Migrations
 
                     b.HasKey("ChannelId");
 
-                    b.ToTable("Channels");
+                    b.ToTable("Channels", (string)null);
 
                     b.HasData(
                         new
@@ -191,7 +191,7 @@ namespace LystfiskerPortalen.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Interactions");
+                    b.ToTable("Interactions", (string)null);
                 });
 
             modelBuilder.Entity("LystfiskerPortalen.Application.Models.Post", b =>
@@ -243,7 +243,7 @@ namespace LystfiskerPortalen.Migrations
 
                     b.HasIndex("ChannelId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("LystfiskerPortalen.Application.Models.Profile", b =>
@@ -266,7 +266,7 @@ namespace LystfiskerPortalen.Migrations
                     b.HasIndex("AppUserId")
                         .IsUnique();
 
-                    b.ToTable("Profiles");
+                    b.ToTable("Profiles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -418,7 +418,7 @@ namespace LystfiskerPortalen.Migrations
 
                     b.HasIndex("FollowingProfileId");
 
-                    b.ToTable("ProfileProfile");
+                    b.ToTable("ProfileProfile", (string)null);
                 });
 
             modelBuilder.Entity("LystfiskerPortalen.Application.Models.AppUserChannel", b =>
