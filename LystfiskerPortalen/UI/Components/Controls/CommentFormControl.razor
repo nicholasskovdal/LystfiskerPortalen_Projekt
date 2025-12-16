@@ -1,5 +1,45 @@
-﻿<h3>CommentFormControl</h3>
+﻿@using LystfiskerPortalen.Application.Interfaces
+@using LystfiskerPortalen.UI.ViewModels
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthProvider
+@inject IInteractionService InteractionService
+@rendermode InteractiveServer
+
+<EditForm Model="@formModel" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-2">
+        <InputTextArea class="form-control" @bind-Value="formModel.Content" placeholder="Skriv en kommentar..." />
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-sm btn-outline-primary">Kommentér</button>
+    </div>
+</EditForm>
 
 @code {
+    [Parameter] public string PostId { get; set; } = string.Empty;
+    [Parameter] public EventCallback OnCommentCreated { get; set; }
 
+    private CommentFormViewModel formModel = new();
+    private string? userId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        formModel.PostId = PostId;
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (userId != null)
+        {
+            await InteractionService.AddCommentAsync(formModel, userId);
+            formModel = new() { PostId = PostId }; // reset form
+            await OnCommentCreated.InvokeAsync();
+        }
+    }
 }

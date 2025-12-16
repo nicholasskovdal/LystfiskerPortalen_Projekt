@@ -10,7 +10,7 @@ namespace LystfiskerPortalen.Data.Persistence
         private readonly LystfiskerportalDbContext _context;
         public ChannelRepository(LystfiskerportalDbContext context)
         {
-            _context = context;   
+            _context = context;
         }
 
 
@@ -29,7 +29,7 @@ namespace LystfiskerPortalen.Data.Persistence
         public async Task<IEnumerable<AppUser>> GetAllUsersInChannelAsync(int userId)
         {
             var appUsers = new List<AppUser>();
-            await foreach(var user in _context.AppUserChannels)
+            await foreach (var user in _context.AppUserChannels)
             {
                 appUsers.Add(user.AppUser);
             }
@@ -40,7 +40,13 @@ namespace LystfiskerPortalen.Data.Persistence
         {
             return await _context.Channels
                 .Include(c => c.Posts)
+                    .ThenInclude(p => p.Interactions)
+                        .ThenInclude(i => i.AppUser) // for author info
+                .Include(c => c.Posts)
+                    .ThenInclude(p => p.AppUser)
+                        .ThenInclude(u => u.Profile) // for author names
                 .FirstOrDefaultAsync(c => c.ChannelId == channelId.ToString());
+
         }
     }
 }

@@ -27,7 +27,7 @@
                 }
 
                 <div class="mb-3">
-                    <InputText class="form-control" @bind-Value="formModel.ImageUrl" placeholder="Billede URL (valgfrit)" />
+                    <InputFile OnChange="HandleFileSelected"></InputFile>
                 </div>
 
                 <div class="mb-3">
@@ -87,5 +87,34 @@
         {
             Console.WriteLine("No userId found");
         }
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            var allowedExtensions = new[] { ".png", ".jpg", ".jpeg" };
+            var extension = Path.GetExtension(file.Name).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                Console.WriteLine($"Filtype er ikke tilladt: {extension}");
+                return; // or show a validation message
+            }
+
+            var uploadsFolder = Path.Combine("wwwroot", "uploads");
+            Directory.CreateDirectory(uploadsFolder);
+
+            var uniqueName = $"{Guid.NewGuid()}{extension}";
+            var filePath = Path.Combine(uploadsFolder, uniqueName);
+
+            await using var stream = File.Create(filePath);
+            await file.OpenReadStream(maxAllowedSize: 10_000_000).CopyToAsync(stream); // 10 MB
+
+            formModel.ImageUrl = $"/uploads/{uniqueName}";
+        }
+
+
     }
 }

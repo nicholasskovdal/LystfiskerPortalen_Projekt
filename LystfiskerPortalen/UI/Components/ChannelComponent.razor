@@ -36,7 +36,7 @@
             <div class="posts">
                 @foreach (var post in channelViewModel.Posts)
                 {
-                    <PostControl postViewModel="@post" OnInteractionChanged="@ReloadPosts"/>
+                    <PostControl postViewModel="@post" OnInteractionChanged="@ReloadPosts" />
                 }
             </div>
         }
@@ -74,27 +74,29 @@
             {
                 ChannelId = channel.ChannelId,
                 Name = channel.Name,
-                Posts = channel.Posts.Select(p => new PostViewModel
-                {
-                    PostId = p.PostId,
-                    Description = p.Description,
-                    Date = p.Date,
-                    Bait = p.Bait,
-                    Location = p.Location,
-                    Technique = p.Technique,
-                    ImageUrl = p.ImageUrl,
-                    Inspiration = p.Inspiration,
-                    CreatedAt = p.CreatedAt,
-                    AuthorName = p.AppUser?.Profile?.ProfileName ?? "Ukendt",
-                    Interactions = p.Interactions.Select(i => new InteractionViewModel
+                Posts = channel.Posts
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Select(p => new PostViewModel
                     {
-                        InteractionId = i.InteractionId,
-                        Type = i.Type,
-                        Content = i.Content,
-                        CreatedAt = i.CreatedAt,
-                        AuthorName = i.AppUser?.Profile?.ProfileName ?? "Ukendt"
+                        PostId = p.PostId,
+                        Description = p.Description,
+                        Date = p.Date,
+                        Bait = p.Bait,
+                        Location = p.Location,
+                        Technique = p.Technique,
+                        ImageUrl = p.ImageUrl,
+                        Inspiration = p.Inspiration,
+                        CreatedAt = p.CreatedAt,
+                        AuthorName = p.AppUser?.Profile?.ProfileName ?? "Ukendt",
+                        Interactions = p.Interactions.Select(i => new InteractionViewModel
+                        {
+                            InteractionId = i.InteractionId,
+                            Type = i.Type,
+                            Content = i.Content,
+                            CreatedAt = i.CreatedAt,
+                            AuthorName = i.AppUser?.Profile?.ProfileName ?? "Ukendt"
+                        }).ToList()
                     }).ToList()
-                }).ToList()
             };
         }
     }
