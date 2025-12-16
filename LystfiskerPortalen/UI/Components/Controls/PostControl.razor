@@ -5,6 +5,7 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthProvider
 @inject IInteractionService InteractionService
+@rendermode InteractiveServer
 
 
 <div class="d-flex justify-content-center">
@@ -84,6 +85,7 @@
 
 @code {
     [Parameter] public PostViewModel postViewModel { get; set; }
+    [Parameter] public EventCallback OnInteractionChanged { get; set; } //event part 1
 
     private bool showCommentForm = false;
     private string? userId;
@@ -104,6 +106,7 @@
         if (userId != null)
         {
             await InteractionService.ToggleLikeAsync(postViewModel.PostId, userId);
+            await OnInteractionChanged.InvokeAsync(); //event part 2
         }
     }
 

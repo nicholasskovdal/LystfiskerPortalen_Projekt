@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IChannelRepository ChannelRepo
 @inject AuthenticationStateProvider AuthProvider /*replaces UserManager in .razor files*/
+@rendermode InteractiveServer
 
 <div>
     @if (!isAuthenticated)
@@ -17,13 +18,13 @@
 
         <div class="mb-3">
             <button class="btn btn-primary" @onclick="TogglePostForm">
-                @(showPostForm ? "Annuller" : "Opret nyt opslag")
+                @(showPostForm ? "Annuller" : "Opret Opslag")
             </button>
         </div>
 
         @if (showPostForm)
         {
-            <PostFormControl ChannelId="@ChannelId.ToString()" OnPostCreated="OnPostCreated" />
+            <PostFormControl ChannelId="@ChannelId.ToString()" OnPostCreated="@OnPostCreated" />
         }
 
         @if (channelViewModel?.Posts == null || !channelViewModel.Posts.Any())
@@ -35,7 +36,7 @@
             <div class="posts">
                 @foreach (var post in channelViewModel.Posts)
                 {
-                    <PostControl postViewModel="@post" />
+                    <PostControl postViewModel="@post" OnInteractionChanged="@ReloadPosts"/>
                 }
             </div>
         }
@@ -48,6 +49,10 @@
     private ChannelViewModel? channelViewModel;
     private bool isAuthenticated = false;
     private bool showPostForm = false;
+
+    public ChannelComponent()
+    {
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,7 +99,17 @@
         }
     }
 
-    private void TogglePostForm() => showPostForm = !showPostForm;
+    private void TogglePostForm()
+    {
+        if (showPostForm == true)
+        {
+            showPostForm = false;
+        }
+        else if (showPostForm == false)
+        {
+            showPostForm = true;
+        }
+    }
 
     private async Task OnPostCreated()
     {
@@ -102,5 +117,8 @@
         await LoadChannel();  // reload posts so new one appears
     }
 
-
+    private async Task ReloadPosts()
+    {
+        await LoadChannel();
+    }
 }

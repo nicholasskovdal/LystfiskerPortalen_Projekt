@@ -19,7 +19,10 @@ namespace LystfiskerPortalen
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddRazorComponents();
+            builder.Services.AddRazorComponents()
+                .AddInteractiveServerComponents();
+            //builder.Services.AddSignalR();
+
             builder.Services.AddDbContext<LystfiskerportalDbContext>(options =>
                 {
                     options.UseSqlServer(builder.Configuration.GetConnectionString("LystfiskerPortalenConnection"));
@@ -62,7 +65,10 @@ namespace LystfiskerPortalen
 
             app.MapRazorPages(); //Skal m�ske ikke v�re her
 
-            app.MapRazorComponents<App>();
+            app.MapRazorComponents<App>()
+                .AddInteractiveServerRenderMode();
+
+            //app.MapHub<PostHub>("/postHub");
 
             app.Run();
             app.UseStaticFiles();  // this found on chat gpt to run css in wwwroot
