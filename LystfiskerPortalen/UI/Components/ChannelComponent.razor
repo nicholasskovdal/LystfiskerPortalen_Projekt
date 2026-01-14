@@ -54,7 +54,7 @@
     {
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()      //Lifecycle method
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
         isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
